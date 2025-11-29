@@ -52,18 +52,34 @@ export default function App() {
     let sourceContent = "";
     setIsGenerating(true);
     setResults(null); 
-
-    // 1. CONTENT SOURCE
+    
+    // --- 1. CONTENT ACQUISITION ---
     if (inputMode === 'link') {
         setStatusMessage("Scraping webpage...");
         const scraped = await scrapeWebPage(inputText);
         if (!scraped) { alert("Scrape failed."); setIsGenerating(false); return; }
-        sourceContent = scraped.substring(0, 10000);
+        sourceContent = scraped; // Use full scraped text
     } else {
+        // Covers 'text' and 'persona' modes (where content is manually entered)
         sourceContent = inputText;
     }
+    
+    // --- CRITICAL FIX: VALIDATION AND TRUNCATION ---
+    const MAX_CONTEXT_LENGTH = 8000;
+    
+    if (!sourceContent.trim()) { 
+        alert("Please provide source content."); 
+        setIsGenerating(false); 
+        return; 
+    }
 
-    if (!sourceContent.trim()) { alert("Please provide source content."); setIsGenerating(false); return; }
+    if (sourceContent.length > MAX_CONTEXT_LENGTH) {
+        setStatusMessage("Content size exceeded, truncating source text to 8,000 characters...");
+        // Truncate the content to prevent API Error 400
+        sourceContent = sourceContent.substring(0, MAX_CONTEXT_LENGTH);
+    }
+    // --- END OF CRITICAL FIX ---
+
 
     // 2. CONSTRUCT PROMPT
     setStatusMessage("Designing Content Strategy...");
