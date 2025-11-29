@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Sparkles } from 'lucide-react';
-import Sidebar from './components/Sidebar';
-import OutputGallery from './components/OutputGallery';
-import Splash from './components/Splash';
+import Sidebar from './components/Sidebar.jsx';
+import OutputGallery from './components/OutputGallery.jsx';
+import Splash from './components/Splash.jsx';
 import { callGemini, callImagen, scrapeWebPage } from './services/api';
 
 export default function App() {
